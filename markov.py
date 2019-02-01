@@ -18,7 +18,7 @@ def open_and_read_file(file_path):
     return file_string
 
 
-def make_chains(text_string):
+def make_chains(text_string, gram_num):
     """Take input text as string; return dictionary of Markov chains.
 
     A chain will be a key that consists of a tuple of (word1, word2)
@@ -45,21 +45,35 @@ def make_chains(text_string):
 
     chains = {}
 
+
     # your code goes here
     words = text_string.split()
 
-    for i in range(len(words)-2):
-        word_tuple = ((words[i], words[i+1]))
+    # for i in range(len(words)-2):
+    #     word_tuple = ((words[i], words[i+1]))
 
-        if(word_tuple in list(chains.keys())):
-            chains[word_tuple].append(words[i+2])
+    #     if(word_tuple in list(chains.keys())):
+    #         chains[word_tuple].append(words[i+2])
+    #     else:
+    #         chains[word_tuple] = [words[i+2]]
+
+    for i in range(len(words)-gram_num):
+        gram_list = []
+        j = i
+        for j in range(gram_num):
+            gram_list.append(words[j])
+
+        word_tuple = tuple(gram_list)
+
+        if word_tuple in list(chains.keys()):
+            chains[word_tuple].append(words[i+gram_num])
         else:
-            chains[word_tuple] = [words[i+2]]
+            chains[word_tuple] = [words[i+gram_num]]
 
     return chains
 
 
-def make_text(chains):
+def make_text(chains, gram_num):
     """Return text from chains."""
 
     words = []
@@ -69,14 +83,29 @@ def make_text(chains):
     current_key = choice(list(chains.keys()))
     #print(current_key)
 
-    while current_key in list(chains.keys()):
-        words.append(current_key[0])
-    
-        new_key = (current_key[1], choice(chains[current_key]))
-        current_key = new_key
+    # while current_key in list(chains.keys()):
+    #     words.append(current_key[0])
 
-    words.append(current_key[0])
-    words.append(current_key[1])
+    #     new_key = (current_key[1], choice(chains[current_key]))
+    #     current_key = new_key
+
+    # words.append(current_key[0])
+    # words.append(current_key[1])
+
+
+    while current_key in list(chains.keys()):
+        for i in range(len(current_key)-1):
+            words.append(current_key[i])
+
+        curr_list = list(current_key)
+        curr_list.pop(0)
+        curr_list.append(choice(chains[current_key]))
+    
+        #new_key = (current_key[1], choice(chains[current_key]))
+        current_key = tuple(curr_list)
+
+    for word in current_key:
+        words.append(word)
 
     return " ".join(words)
 
@@ -86,13 +115,14 @@ input_path = sys.argv[1]
 # Open the file and turn it into one long string
 input_text = open_and_read_file(input_path)
 
+gram_num = 4
 
 # Get a Markov chain
-chains = make_chains(input_text)
+chains = make_chains(input_text, gram_num)
 
-#print(chains)
+print(chains)
 
 # Produce random text
-random_text = make_text(chains)
+random_text = make_text(chains, gram_num)
 
 print(random_text)
