@@ -49,6 +49,21 @@ def make_chains(text_string, gram_num):
     # your code goes here
     words = text_string.split()
 
+    for i in range(len(words)-gram_num):
+       # print("i = ", i)
+        #j = i
+        word_list = []
+        for j in range(i, i + gram_num):
+            #print("j = ", j)
+            word_list.append(words[j])
+        word_tuple = tuple(word_list)
+
+        if(word_tuple in list(chains.keys())):
+            chains[word_tuple].append(words[i+gram_num])
+        else:
+            chains[word_tuple] = [words[i+gram_num]]
+
+
     # for i in range(len(words)-2):
     #     word_tuple = ((words[i], words[i+1]))
 
@@ -57,18 +72,18 @@ def make_chains(text_string, gram_num):
     #     else:
     #         chains[word_tuple] = [words[i+2]]
 
-    for i in range(len(words)-gram_num):
-        gram_list = []
-        j = i
-        for j in range(gram_num):
-            gram_list.append(words[j])
+    # for i in range(len(words)-gram_num):
+    #     gram_list = []
+    #     j = i
+    #     for j in range(gram_num):
+    #         gram_list.append(words[j])
 
-        word_tuple = tuple(gram_list)
+    #     word_tuple = tuple(gram_list)
 
-        if word_tuple in list(chains.keys()):
-            chains[word_tuple].append(words[i+gram_num])
-        else:
-            chains[word_tuple] = [words[i+gram_num]]
+    #     if word_tuple in list(chains.keys()):
+    #         chains[word_tuple].append(words[i+gram_num])
+    #     else:
+    #         chains[word_tuple] = [words[i+gram_num]]
 
     return chains
 
@@ -81,7 +96,21 @@ def make_text(chains, gram_num):
     # your code goes here
 
     current_key = choice(list(chains.keys()))
-    #print(current_key)
+
+    while current_key in list(chains.keys()):
+        words.append(current_key[0])
+
+        new_key_list = []
+        for i in range(1, gram_num):
+           # print("i = ", i)
+            new_key_list.append(current_key[i])
+        new_key_list.append(choice(chains[current_key]))
+
+        current_key = tuple(new_key_list)
+
+
+
+    # print(current_key)
 
     # while current_key in list(chains.keys()):
     #     words.append(current_key[0])
@@ -92,20 +121,9 @@ def make_text(chains, gram_num):
     # words.append(current_key[0])
     # words.append(current_key[1])
 
-
-    while current_key in list(chains.keys()):
-        for i in range(len(current_key)-1):
-            words.append(current_key[i])
-
-        curr_list = list(current_key)
-        curr_list.pop(0)
-        curr_list.append(choice(chains[current_key]))
-    
-        #new_key = (current_key[1], choice(chains[current_key]))
-        current_key = tuple(curr_list)
-
-    for word in current_key:
-        words.append(word)
+    #     words.append(word)
+    for j in range(0, gram_num):
+        words.append(current_key[j])
 
     return " ".join(words)
 
@@ -115,7 +133,7 @@ input_path = sys.argv[1]
 # Open the file and turn it into one long string
 input_text = open_and_read_file(input_path)
 
-gram_num = 4
+gram_num = 2
 
 # Get a Markov chain
 chains = make_chains(input_text, gram_num)
