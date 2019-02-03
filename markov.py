@@ -94,8 +94,10 @@ def make_text(chains, gram_num):
     words = []
 
     # your code goes here
-
     current_key = choice(list(chains.keys()))
+    
+    while not current_key[0][0].isupper():
+        current_key = choice(list(chains.keys()))
 
     while current_key in list(chains.keys()):
         words.append(current_key[0])
