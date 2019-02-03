@@ -18,6 +18,9 @@ def open_and_read_file(file_path):
     return file_string
 
 
+# def make_key(i, gram_num,words):
+#     return tuple([words[j] for j in range(i, i + gram_num)])
+
 def make_chains(text_string, gram_num):
     """Take input text as string; return dictionary of Markov chains.
 
@@ -43,11 +46,21 @@ def make_chains(text_string, gram_num):
         [None]
     """
 
-    chains = {}
-
-
+    #dict_variable = {key:value for (key,value) in dictonary.items()}
     # your code goes here
     words = text_string.split()
+
+
+    # chains = { make_key(i, gram_num,words):
+    #    (chains[make_key(i, gram_num,words)].append(words[i+gram_num])
+    #     if make_key(i, gram_num,words) in list(chains.keys())
+    #     else [words[i+gram_num]])
+    #     for i in range(len(words)- gram_num)}
+
+    #word_list_comp = [words[j] for j in range(i, i + gram_num)]
+
+
+    
 
     for i in range(len(words)-gram_num):
        # print("i = ", i)
@@ -72,18 +85,6 @@ def make_chains(text_string, gram_num):
     #     else:
     #         chains[word_tuple] = [words[i+2]]
 
-    # for i in range(len(words)-gram_num):
-    #     gram_list = []
-    #     j = i
-    #     for j in range(gram_num):
-    #         gram_list.append(words[j])
-
-    #     word_tuple = tuple(gram_list)
-
-    #     if word_tuple in list(chains.keys()):
-    #         chains[word_tuple].append(words[i+gram_num])
-    #     else:
-    #         chains[word_tuple] = [words[i+gram_num]]
 
     return chains
 
